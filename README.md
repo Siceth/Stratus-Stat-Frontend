@@ -1,9 +1,8 @@
-# Stats Services
+# Stratus Stat Frontend (made distinct from "stat-services")
 
-I write a lot of small independent scripts based on crawling or calculating foreign data.  Most of them are private, but what's listed here is public if you find it helpful.  It includes:
+This is a fun weekend project currently hosted at https://stats.seth-phillips.com/, that pulls data ingested from [Stratus-Stat-Utilities](https://github.com/Siceth/Stratus-Stat-Utilities) and renders content to the interwebs.
 
-* **stratus** A mirror for caching pages on Stratus Network ([https://stratus.network/](https://stratus.network/))
-* **stratus-maps** An image cache repository for Stratus maps that searches natively and on [MCResourcePile](https://github.com/MCResourcePile/mcresourcepile.github.io)
-* **stratus-topdonor** Simply get the in-game username of the person listed as the top donor [here](https://stratusnetwork.buycraft.net/).
+Really the only things of interest here are the esoteric PHP routing and the graphing solutions. Bon Appétit!
 
-These all assume an Apache/PHP web server.  Remember to `chmod -R u+rwX,go+rX,go-w /var/www/html` and `chown` accordingly!
+
+(Also, this is assumed to be an Apache/PHP setup.  Remember to `chmod -R u+rwX,go+rX,go-w /var/www/html` and `chown` accordingly!)
