@@ -50,7 +50,7 @@ if(isset($_GET['request'])) {
 } else {
 	header('Content-type: text/html');
 	?>
-Stratus Network Map Cache<br>
+PGM Map Cache<br>
 =========================<br>
 <br>
 Usage: /&lt;request&gt;[?force-renew]<br>
@@ -69,7 +69,7 @@ function tryMethodsWithName($methods, $mapName) {
 		if($foundMap) {
 			break;
 		}
-		$map = getMapImage($method.$mapName.'/map.png');
+		$map = getMapImage($method.rawurlencode($mapName).'/map.png');
 		if($map['success']) {
 			$foundMap = true;
 			return $map['data'];
