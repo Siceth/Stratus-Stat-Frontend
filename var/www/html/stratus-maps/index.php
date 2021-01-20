@@ -3,8 +3,7 @@ $foundMap = false;
 if(isset($_GET['request'])) {
 	header('Content-type: text/plain');
 	$cacheDir = '../../cache/_stats/stratus-maps/';
-	$_GET['request'] = str_replace(' ', '_', $_GET['request']);
-	if(!isset($_GET['force-renew']) && file_exists($cacheDir.$_GET['request'].'.png') && !is_dir($cacheDir.$_GET['request'].'.png') && (time()-(file_exists($cacheDir.$_GET['request'].'.png') ? filemtime($cacheDir.$_GET['request'].'.png') : 0)) > 2592000) {
+	if(!isset($_GET['force-renew']) && file_exists($cacheDir.$_GET['request'].'.png') && !is_dir($cacheDir.$_GET['request'].'.png') && (time()-(file_exists($cacheDir.$_GET['request'].'.png') ? filemtime($cacheDir.$_GET['request'].'.png') : 0)) < 2592000) {
 		echo file_get_contents($cacheDir.$_GET['request'].'.png');
 	} else {
 		$mapImage = false;
@@ -34,7 +33,6 @@ if(isset($_GET['request'])) {
 			'https://raw.githubusercontent.com/MCResourcePile/overcast-maps-o-to-z/master/maps/',
 			'https://raw.githubusercontent.com/MCResourcePile/rfw-maps/master/maps/'
 		];
-		//$mapImage = $mapImage ?: tryMethodsWithName($stratusMethods, normalizeStratusMapName($_GET['request']));
 		$mapImage = $mapImage ?: tryMethodsWithName($occMethods, normalizeOCCMapName($_GET['request']));
 		$mapImage = $mapImage ?: tryMethodsWithName($resourcePileMethods, normalizeResourcePileMapName($_GET['request']));
 		$mapImage = $mapImage ?: tryMethodsWithName($resourcePileMethods, normalizeResourcePileMapNameAgain($_GET['request']));
@@ -100,12 +98,8 @@ function getMapImage($url) {
 	];
 }
 
-function normalizeStratusMapName($name) {
-	return preg_replace('/[^a-z0-9_.\']/', '', strtolower($name));
-}
-
 function normalizeOCCMapName($name) {
-	return preg_replace('/[^A-Za-z0-9_.\']/', '', str_replace(':', '', $name));
+	return preg_replace('/[^A-Za-z0-9 _.\']/', '', str_replace(':', '', $name));
 }
 
 function normalizeResourcePileMapName($name) {
