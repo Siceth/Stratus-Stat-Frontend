@@ -2,9 +2,9 @@
 $foundMap = false;
 if(isset($_GET['request'])) {
 	header('Content-type: text/plain');
-	$_GET['request'] = strtolower($_GET['request']);
-	$cacheDir = '../../cache/stratus-maps/';
-	if(!isset($_GET['force-renew']) && !is_dir($cacheDir.$_GET['request'].'.png') && (time()-(file_exists($cacheDir.$_GET['request'].'.png') ? filemtime($cacheDir.$_GET['request'].'.png') : 0)) < 2592000) {
+	$cacheDir = '../../cache/_stats/stratus-maps/';
+	$_GET['request'] = str_replace(' ', '_', $_GET['request']);
+	if(!isset($_GET['force-renew']) && file_exists($cacheDir.$_GET['request'].'.png') && !is_dir($cacheDir.$_GET['request'].'.png') && (time()-(file_exists($cacheDir.$_GET['request'].'.png') ? filemtime($cacheDir.$_GET['request'].'.png') : 0)) > 2592000) {
 		echo file_get_contents($cacheDir.$_GET['request'].'.png');
 	} else {
 		$mapImage = false;
@@ -22,15 +22,20 @@ if(isset($_GET['request'])) {
 			'https://stratus.nyc3.digitaloceanspaces.com/maps/blitz/rage/standard/',
 			'https://stratus.nyc3.digitaloceanspaces.com/maps/blitz/ffa/standard/'
 		];
+		$occMethods = [
+			'https://raw.githubusercontent.com/OvercastCommunity/overcastcommunity.github.io/master/assets/img/maps/'
+		];
 		$resourcePileMethods = [
 			'https://raw.githubusercontent.com/MCResourcePile/pgm-maps/master/maps/',
 			'https://raw.githubusercontent.com/MCResourcePile/stratus-maps/master/maps/',
 			'https://raw.githubusercontent.com/MCResourcePile/avicus-maps/master/maps/',
 			'https://raw.githubusercontent.com/MCResourcePile/overcast-maps-a-to-f/master/maps/',
 			'https://raw.githubusercontent.com/MCResourcePile/overcast-maps-g-to-n/master/maps/',
-			'https://raw.githubusercontent.com/MCResourcePile/overcast-maps-o-to-z/master/maps/'
+			'https://raw.githubusercontent.com/MCResourcePile/overcast-maps-o-to-z/master/maps/',
+			'https://raw.githubusercontent.com/MCResourcePile/rfw-maps/master/maps/'
 		];
-		$mapImage = $mapImage ?: tryMethodsWithName($stratusMethods, normalizeStratusMapName($_GET['request']));
+		//$mapImage = $mapImage ?: tryMethodsWithName($stratusMethods, normalizeStratusMapName($_GET['request']));
+		$mapImage = $mapImage ?: tryMethodsWithName($occMethods, normalizeOCCMapName($_GET['request']));
 		$mapImage = $mapImage ?: tryMethodsWithName($resourcePileMethods, normalizeResourcePileMapName($_GET['request']));
 		$mapImage = $mapImage ?: tryMethodsWithName($resourcePileMethods, normalizeResourcePileMapNameAgain($_GET['request']));
 		if($foundMap) {
@@ -96,14 +101,18 @@ function getMapImage($url) {
 }
 
 function normalizeStratusMapName($name) {
-	return preg_replace('/[^a-z0-9_.\']/', '', str_replace(' ', '_', $name));
+	return preg_replace('/[^a-z0-9_.\']/', '', strtolower($name));
+}
+
+function normalizeOCCMapName($name) {
+	return preg_replace('/[^A-Za-z0-9_.\']/', '', str_replace(':', '', $name));
 }
 
 function normalizeResourcePileMapName($name) {
-	return preg_replace('/[^a-z0-9_.]/', '_', str_replace(':', '', $name));
+	return preg_replace('/[^a-z0-9_.]/', '_', str_replace(':', '', strtolower($name)));
 }
 
 function normalizeResourcePileMapNameAgain($name) {
-	return preg_replace('/[^a-z0-9_.]/', '_', preg_replace('/[:\']/', '', $name));
+	return preg_replace('/[^a-z0-9_.]/', '_', preg_replace('/[:\']/', '', strtolower($name)));
 }
 ?>
